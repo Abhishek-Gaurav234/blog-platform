@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Platform - New Structure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        .structure {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .folder {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        .folder h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .folder-icon {
+            font-size: 2rem;
+        }
+        .tree {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-left: 1rem;
+        }
+        .tree div {
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .tree div:before {
+            content: '├─';
+            position: absolute;
+            left: 0;
+            color: #999;
+        }
+        .tree div:last-child:before {
+            content: '└─';
+        }
+        .file {
+            color: #3498db;
+        }
+        .folder-name {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .highlight {
+            background: #fff9e6;
+            border-left: 4px solid #f39c12;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 5px;
+        }
+        .commands {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        .commands code {
+            color: #2ecc71;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .card h3 {
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: #27ae60;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗂️ Blog Platform - Reorganized Structure</h1>
+        
+        <div class="highlight">
+            <h3>✅ Backend Successfully Moved to <code>backend/</code> Folder!</h3>
+            <p>All Go backend code is now organized in a dedicated directory, separate from the frontend.</p>
+        </div>
+
+        <div class="structure">
+            <div class="folder">
+                <h2><span class="folder-icon">🔧</span> Backend Folder</h2>
+                <div class="tree">
+                    <div><span class="folder-name">backend/</span></div>
+                    <div><span class="folder-name">├─ cmd/api/</span></div>
+                    <div>&nbsp;&nbsp;<span class="file">└─ main.go</span></div>
+                    <div><span class="folder-name">├─ internal/</span></div>
+                    <div>&nbsp;&nbsp;<span class="folder-name">├─ handler/</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">└─ post_handler.go</span></div>
+                    <div>&nbsp;&nbsp;<span class="folder-name">├─ models/</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ database.go</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">└─ post.go</span></div>
+                    <div>&nbsp;&nbsp;<span class="folder-name">└─ service/</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ command_service.go</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ query_service.go</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ content_factory.go</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">└─ observer.go</span></div>
+                    <div><span class="folder-name">├─ pkg/circuitbreaker/</span></div>
+                    <div>&nbsp;&nbsp;<span class="file">└─ circuit_breaker.go</span></div>
+                    <div><span class="file">├─ go.mod</span></div>
+                    <div><span class="file">├─ go.sum</span></div>
+                    <div><span class="file">├─ Dockerfile</span></div>
+                    <div><span class="file">├─ .gitignore</span></div>
+                    <div><span class="file">└─ README.md</span></div>
+                </div>
+            </div>
+
+            <div class="folder">
+                <h2><span class="folder-icon">⚛️</span> Frontend Folder</h2>
+                <div class="tree">
+                    <div><span class="folder-name">frontend/</span></div>
+                    <div><span class="folder-name">├─ src/</span></div>
+                    <div>&nbsp;&nbsp;<span class="folder-name">├─ components/</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ PostList.jsx</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ PostDetail.jsx</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ CreatePost.jsx</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">├─ EditPost.jsx</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">└─ PostForm.jsx</span></div>
+                    <div>&nbsp;&nbsp;<span class="folder-name">├─ services/</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="file">└─ api.js</span></div>
+                    <div>&nbsp;&nbsp;<span class="file">├─ App.jsx</span></div>
+                    <div>&nbsp;&nbsp;<span class="file">├─ main.jsx</span></div>
+                    <div>&nbsp;&nbsp;<span class="file">└─ index.css</span></div>
+                    <div><span class="file">├─ package.json</span></div>
+                    <div><span class="file">├─ vite.config.js</span></div>
+                    <div><span class="file">├─ index.html</span></div>
+                    <div><span class="file">└─ README.md</span></div>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 3rem; color: #333;">📋 Running Commands</h2>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>🐳 Docker (Easiest)</h3>
+                <div class="commands">
+                    <code>docker-compose up --build</code>
+                </div>
+                <p>Starts both frontend and backend automatically</p>
+            </div>
+
+            <div class="card">
+                <h3>🔧 Backend Only</h3>
+                <div class="commands">
+                    <code>cd backend<br>go run cmd/api/main.go</code>
+                </div>
+                <p>Runs on http://localhost:8080</p>
+            </div>
+
+            <div class="card">
+                <h3>⚛️ Frontend Only</h3>
+                <div class="commands">
+                    <code>cd frontend<br>npm install<br>npm run dev</code>
+                </div>
+                <p>Runs on http://localhost:3000</p>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Quick Start</h3>
+                <div class="commands">
+                    <code>.\start-local.ps1</code>
+                </div>
+                <p>PowerShell script (Windows)</p>
+            </div>
+        </div>
+
+        <div class="highlight" style="background: #e8f5e9; border-color: #27ae60;">
+            <h3>✨ Benefits of New Structure</h3>
+            <ul style="margin-left: 2rem; margin-top: 1rem; line-height: 2;">
+                <li>🗂️ <strong>Clear Separation:</strong> Frontend and backend are isolated</li>
+                <li>📦 <strong>Independent Deployment:</strong> Deploy separately if needed</li>
+                <li>🔧 <strong>Easier Maintenance:</strong> Dependencies are scoped to each service</li>
+                <li>📚 <strong>Better Organization:</strong> Clearer project structure</li>
+                <li>🐳 <strong>Docker Friendly:</strong> Each has its own Dockerfile</li>
+                <li>👥 <strong>Team Collaboration:</strong> Separate folders for frontend/backend teams</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #f0f0f0;">
+            <h3 style="color: #667eea;">🎉 Backend Restructuring Complete!</h3>
+            <p style="margin: 1rem 0;">Your blog platform now has a clean, organized structure</p>
+            <div class="badge">READY TO USE</div>
+        </div>
+    </div>
+</body>
+</html>

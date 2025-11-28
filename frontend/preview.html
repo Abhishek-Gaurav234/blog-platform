@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Platform - Component Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .preview-section {
+            margin-bottom: 3rem;
+        }
+        .preview-section h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .component-preview {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .badge-article { background-color: #3498db; }
+        .badge-tutorial { background-color: #2ecc71; }
+        .badge-review { background-color: #e74c3c; }
+        .badge-published { background-color: #27ae60; }
+        .badge-draft { background-color: #f39c12; }
+        .badge-archived { background-color: #7f8c8d; }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            color: white;
+        }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .btn-view { background-color: #3498db; }
+        .btn-edit { background-color: #f39c12; }
+        .btn-delete { background-color: #e74c3c; }
+        .post-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .info-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Blog Platform - Component Preview</h1>
+        
+        <div class="preview-section">
+            <h2>1. Post List View</h2>
+            <div class="component-preview">
+                <h3 style="margin-bottom: 1rem;">Blog Posts</h3>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <select style="padding: 0.5rem;">
+                        <option>All Status</option>
+                        <option>Published</option>
+                        <option>Draft</option>
+                    </select>
+                    <select style="padding: 0.5rem;">
+                        <option>All Types</option>
+                        <option>Article</option>
+                        <option>Tutorial</option>
+                    </select>
+                </div>
+                <div class="post-card">
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge badge-article">article</span>
+                        <span class="badge badge-published">Published</span>
+                    </div>
+                    <h3>Getting Started with React</h3>
+                    <p style="color: #666; margin: 1rem 0;">Learn the basics of React and build your first component...</p>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-view">View</button>
+                        <button class="btn btn-edit">Edit</button>
+                        <button class="btn btn-delete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>2. Post Detail View</h2>
+            <div class="component-preview">
+                <div style="margin-bottom: 1rem;">
+                    <span class="badge badge-tutorial">tutorial</span>
+                    <span class="badge badge-published">Published</span>
+                </div>
+                <h2 style="margin-bottom: 1rem;">Advanced Go Patterns</h2>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <div>👤 Author #1</div>
+                    <div>📅 Created: November 28, 2025</div>
+                    <div>✏️ Updated: November 28, 2025</div>
+                </div>
+                <p>Full post content would appear here...</p>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>3. Create/Edit Post Form</h2>
+            <div class="component-preview">
+                <form>
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input type="text" placeholder="Enter post title" />
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label>Type *</label>
+                            <select>
+                                <option>Article</option>
+                                <option>Tutorial</option>
+                                <option>Review</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status *</label>
+                            <select>
+                                <option>Draft</option>
+                                <option>Published</option>
+                                <option>Archived</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Author ID *</label>
+                            <input type="number" value="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Content *</label>
+                        <textarea rows="6" placeholder="Write your post content here..."></textarea>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <button type="button" class="btn" style="background-color: #6c757d;">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>4. Badge System</h2>
+            <div class="component-preview">
+                <h3>Post Types</h3>
+                <div style="margin: 1rem 0;">
+                    <span class="badge badge-article">article</span>
+                    <span class="badge badge-tutorial">tutorial</span>
+                    <span class="badge badge-review">review</span>
+                </div>
+                <h3>Post Status</h3>
+                <div style="margin: 1rem 0;">
+                    <span class="badge badge-published">Published</span>
+                    <span class="badge badge-draft">Draft</span>
+                    <span class="badge badge-archived">Archived</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>5. Component Structure</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>PostList.jsx</h3>
+                    <p>Displays all posts in a grid</p>
+                    <p style="margin-top: 0.5rem;">Features: filtering, delete</p>
+                </div>
+                <div class="info-card">
+                    <h3>PostDetail.jsx</h3>
+                    <p>Shows single post details</p>
+                    <p style="margin-top: 0.5rem;">Features: view, edit, delete</p>
+                </div>
+                <div class="info-card">
+                    <h3>CreatePost.jsx</h3>
+                    <p>Create new blog posts</p>
+                    <p style="margin-top: 0.5rem;">Uses: PostForm component</p>
+                </div>
+                <div class="info-card">
+                    <h3>EditPost.jsx</h3>
+                    <p>Edit existing posts</p>
+                    <p style="margin-top: 0.5rem;">Uses: PostForm component</p>
+                </div>
+                <div class="info-card">
+                    <h3>PostForm.jsx</h3>
+                    <p>Reusable form component</p>
+                    <p style="margin-top: 0.5rem;">Shared by Create & Edit</p>
+                </div>
+                <div class="info-card">
+                    <h3>api.js</h3>
+                    <p>API service layer</p>
+                    <p style="margin-top: 0.5rem;">Axios-based HTTP client</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>6. Routes</h2>
+            <div class="component-preview">
+                <ul style="list-style: none; line-height: 2;">
+                    <li>🏠 <code>/</code> → PostList (Home)</li>
+                    <li>📄 <code>/posts/:id</code> → PostDetail</li>
+                    <li>➕ <code>/create</code> → CreatePost</li>
+                    <li>✏️ <code>/edit/:id</code> → EditPost</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>7. API Integration</h2>
+            <div class="component-preview">
+                <ul style="list-style: none; line-height: 2;">
+                    <li>📡 <code>GET /api/v1/posts</code> → List all posts</li>
+                    <li>📡 <code>GET /api/v1/posts/:id</code> → Get single post</li>
+                    <li>📡 <code>POST /api/v1/posts</code> → Create post</li>
+                    <li>📡 <code>PUT /api/v1/posts/:id</code> → Update post</li>
+                    <li>📡 <code>DELETE /api/v1/posts/:id</code> → Delete post</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #f0f0f0;">
+            <h3 style="color: #667eea;">🚀 Ready to Run!</h3>
+            <p style="margin: 1rem 0;">Start with: <code>docker-compose up --build</code></p>
+            <p>Then visit: <strong>http://localhost:3000</strong></p>
+        </div>
+    </div>
+</body>
+</html>

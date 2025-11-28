@@ -1,0 +1,7 @@
+*.db
+*.exe
+*.test
+*.out
+.env
+.DS_Store
+data/
