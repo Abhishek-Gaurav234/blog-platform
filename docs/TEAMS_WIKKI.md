@@ -185,6 +185,6 @@ Track these KPIs monthly:
 
 ---
 
-**Last Updated**: November 28, 2025  
+**Last Updated**: October 28, 2025  
 **Document Owner**: [Add Name]  
 **Next Review Date**: [Add Date]
