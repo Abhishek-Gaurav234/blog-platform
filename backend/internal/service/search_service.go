@@ -9,12 +9,12 @@ import (
 
 // SearchService handles search operations with circuit breaker
 type SearchService struct {
-	postRepo       *models.PostRepository
+	postRepo       models.PostRepositoryInterface
 	circuitBreaker *circuitbreaker.CircuitBreaker
 }
 
 // NewSearchService creates a new search service with circuit breaker
-func NewSearchService(postRepo *models.PostRepository) *SearchService {
+func NewSearchService(postRepo models.PostRepositoryInterface) *SearchService {
 	return &SearchService{
 		postRepo:       postRepo,
 		circuitBreaker: circuitbreaker.NewCircuitBreaker("search", 5, 30),
@@ -59,11 +59,11 @@ func (s *SearchService) performSearch(query string) ([]PostViewModel, error) {
 	// Filter posts by search query (simple implementation)
 	var results []PostViewModel
 	searchLower := strings.ToLower(query)
-	
+
 	for _, post := range posts {
 		titleMatch := strings.Contains(strings.ToLower(post.Title), searchLower)
 		contentMatch := strings.Contains(strings.ToLower(post.Content), searchLower)
-		
+
 		if titleMatch || contentMatch {
 			results = append(results, PostViewModel{
 				ID:        post.ID,

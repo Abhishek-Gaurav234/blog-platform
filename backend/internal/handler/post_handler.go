@@ -190,7 +190,7 @@ func (h *PostHandler) SearchPosts(c *gin.Context) {
 	results, err := h.searchService.SearchPosts(query)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{
-			"error":          "Search service temporarily unavailable",
+			"error":           "Search service temporarily unavailable",
 			"circuit_breaker": h.searchService.GetCircuitBreakerState(),
 		})
 		return
@@ -198,9 +198,9 @@ func (h *PostHandler) SearchPosts(c *gin.Context) {
 
 	// Return results even if empty (circuit breaker may have returned fallback)
 	c.JSON(http.StatusOK, gin.H{
-		"query":   query,
-		"count":   len(results),
-		"results": results,
+		"query":           query,
+		"count":           len(results),
+		"results":         results,
 		"circuit_breaker": h.searchService.GetCircuitBreakerState(),
 	})
 }

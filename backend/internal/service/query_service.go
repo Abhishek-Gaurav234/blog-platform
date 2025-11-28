@@ -29,10 +29,10 @@ type PostViewModel struct {
 }
 
 type QueryService struct {
-	postRepo *models.PostRepository
+	postRepo models.PostRepositoryInterface
 }
 
-func NewQueryService(postRepo *models.PostRepository) *QueryService {
+func NewQueryService(postRepo models.PostRepositoryInterface) *QueryService {
 	return &QueryService{postRepo: postRepo}
 }
 

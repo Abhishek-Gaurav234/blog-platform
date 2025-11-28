@@ -26,10 +26,10 @@ type DeletePostCommand struct {
 }
 
 type CommandService struct {
-	postRepo *models.PostRepository
+	postRepo models.PostRepositoryInterface
 }
 
-func NewCommandService(postRepo *models.PostRepository) *CommandService {
+func NewCommandService(postRepo models.PostRepositoryInterface) *CommandService {
 	return &CommandService{postRepo: postRepo}
 }
 

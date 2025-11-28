@@ -4,8 +4,10 @@ import (
 	"blog-platform/internal/handler"
 	"blog-platform/internal/models"
 	"blog-platform/internal/service"
+	"blog-platform/pkg/proxy"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +17,12 @@ func main() {
 	db := models.GetDatabaseInstance()
 
 	// Initialize repositories
-	postRepo := models.NewPostRepository(db.DB)
+	realPostRepo := models.NewPostRepository(db.DB)
+	
+	// Wrap repository with Caching Proxy (Proxy pattern)
+	// Cache up to 100 posts with 5-minute TTL
+	postRepo := proxy.NewPostRepositoryCachingProxy(realPostRepo, 100, 5*time.Minute)
+	log.Println("✅ Caching Proxy enabled: Max 100 posts, 5min TTL")
 
 	// Initialize services
 	commandService := service.NewCommandService(postRepo)
@@ -69,6 +76,15 @@ func main() {
 			posts.DELETE("/:id", postHandler.DeletePost)
 			posts.GET("/search", postHandler.SearchPosts)
 		}
+
+		// Cache statistics endpoint (demonstrates Proxy pattern benefits)
+		api.GET("/cache/stats", func(c *gin.Context) {
+			stats := postRepo.GetStatistics()
+			c.JSON(200, gin.H{
+				"cache_statistics": stats,
+				"description":      "Proxy Pattern: Transparent caching layer for post repository",
+			})
+		})
 	}
 
 	// Start the server
