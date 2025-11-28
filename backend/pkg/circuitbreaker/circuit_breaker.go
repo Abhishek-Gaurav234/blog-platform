@@ -78,6 +78,25 @@ func (cb *CircuitBreaker) startResetTimer() {
 	cb.failureCount = 0
 }
 
+// GetState returns the current state of the circuit breaker
+func (cb *CircuitBreaker) GetState() CircuitState {
+	cb.mutex.Lock()
+	defer cb.mutex.Unlock()
+	return cb.state
+}
+
+// GetName returns the name of the circuit breaker
+func (cb *CircuitBreaker) GetName() string {
+	return cb.name
+}
+
+// GetFailureCount returns the current failure count
+func (cb *CircuitBreaker) GetFailureCount() int32 {
+	cb.mutex.Lock()
+	defer cb.mutex.Unlock()
+	return cb.failureCount
+}
+
 // Wrapper for external search service
 type SearchService struct {
 	circuitBreaker *CircuitBreaker
@@ -91,9 +110,8 @@ func NewSearchService() *SearchService {
 
 func (s *SearchService) Search(query string) ([]string, error) {
 	var result []string
-	var err error
 
-	s.circuitBreaker.Execute(func() (interface{}, error) {
+	res, err := s.circuitBreaker.Execute(func() (interface{}, error) {
 		// In a real implementation, this would call an external search API
 		// For this example, we'll simulate a failure rate
 		if time.Now().Unix()%5 == 0 { // Simulate 20% failure rate
@@ -101,12 +119,12 @@ func (s *SearchService) Search(query string) ([]string, error) {
 		}
 
 		// Mock search results
-		result = []string{
+		searchResults := []string{
 			"Result 1 for " + query,
 			"Result 2 for " + query,
 			"Result 3 for " + query,
 		}
-		return result, nil
+		return searchResults, nil
 	})
 
 	if err != nil {
@@ -115,7 +133,12 @@ func (s *SearchService) Search(query string) ([]string, error) {
 			"Fallback result 1 for " + query,
 			"Fallback result 2 for " + query,
 		}
+		return result, nil
 	}
 
-	return result, err
+	if res != nil {
+		result = res.([]string)
+	}
+
+	return result, nil
 }

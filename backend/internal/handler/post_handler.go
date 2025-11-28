@@ -13,6 +13,7 @@ type PostHandler struct {
 	queryService   *service.QueryService
 	contentFactory *service.ContentFactory
 	postService    *service.PostService
+	searchService  *service.SearchService
 }
 
 func NewPostHandler(
@@ -20,12 +21,14 @@ func NewPostHandler(
 	queryService *service.QueryService,
 	contentFactory *service.ContentFactory,
 	postService *service.PostService,
+	searchService *service.SearchService,
 ) *PostHandler {
 	return &PostHandler{
 		commandService: cmdService,
 		queryService:   queryService,
 		contentFactory: contentFactory,
 		postService:    postService,
+		searchService:  searchService,
 	}
 }
 
@@ -183,7 +186,21 @@ func (h *PostHandler) SearchPosts(c *gin.Context) {
 		return
 	}
 
-	// TODO: Implement search service with circuit breaker
-	// For now, return a placeholder response
-	c.JSON(http.StatusNotImplemented, gin.H{"error": "Search functionality not yet implemented"})
+	// Search posts using circuit breaker protected service
+	results, err := h.searchService.SearchPosts(query)
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"error":          "Search service temporarily unavailable",
+			"circuit_breaker": h.searchService.GetCircuitBreakerState(),
+		})
+		return
+	}
+
+	// Return results even if empty (circuit breaker may have returned fallback)
+	c.JSON(http.StatusOK, gin.H{
+		"query":   query,
+		"count":   len(results),
+		"results": results,
+		"circuit_breaker": h.searchService.GetCircuitBreakerState(),
+	})
 }

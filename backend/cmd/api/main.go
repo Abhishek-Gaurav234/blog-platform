@@ -22,6 +22,7 @@ func main() {
 	queryService := service.NewQueryService(postRepo)
 	contentFactory := &service.ContentFactory{}
 	postService := service.NewPostService()
+	searchService := service.NewSearchService(postRepo)
 
 	// Register observers
 	postService.Subscribe(&service.SearchIndexObserver{})
@@ -34,6 +35,7 @@ func main() {
 		queryService,
 		contentFactory,
 		postService,
+		searchService,
 	)
 
 	// Set up Gin router
