@@ -1,335 +1,400 @@
-# OpenRouter Provider Listing Requirements Checklist
+I'll elaborate on the API Endpoint Requirements section with more technical details:
 
-A comprehensive guide for model providers to get listed on OpenRouter. 
+```markdown name=OpenRouter-API-Integration-Checklist. md
+## 3. API Endpoint Requirements
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Pre-Registration Checklist](#pre-registration-checklist)
-- [API Compatibility Requirements](#api-compatibility-requirements)
-- [Model Information Requirements](#model-information-requirements)
-- [Technical Implementation](#technical-implementation)
-- [Documentation Requirements](#documentation-requirements)
-- [Quality Standards](#quality-standards)
-- [Integration Process](#integration-process)
-- [Testing & Validation](#testing--validation)
+### Endpoint Configuration
 
----
+#### Base URL & Routing
+- [ ] **Stable Base URL**
+  - [ ] Production endpoint is stable and versioned (e.g., `https://api.yourservice.com/v1`)
+  - [ ] No breaking changes without version increment
+  - [ ] Endpoint has >99. 9% uptime SLA
+  - [ ] CDN/load balancing configured for reliability
+  - [ ] Geographic distribution for low latency
 
-## Overview
+- [ ] **Chat Completions Endpoint**
+  - [ ] Primary endpoint: `/chat/completions` or equivalent
+  - [ ] Accepts POST requests
+  - [ ] Content-Type: `application/json`
+  - [ ] Returns JSON responses
+  - [ ] Supports both streaming and non-streaming modes
 
-This checklist covers all requirements for listing your AI models on OpenRouter. Complete each section to ensure a smooth integration process.
+#### Example Request Structure
+```json
+POST /v1/chat/completions
+Content-Type: application/json
+Authorization: Bearer YOUR_API_KEY
 
----
-
-## Pre-Registration Checklist
-
-### Basic Requirements
-- [ ] Models support OpenAI-compatible API format OR
-- [ ] Models support Anthropic-compatible API format OR
-- [ ] Models support Google-compatible API format OR
-- [ ] Models support Server-Sent Events (SSE) streaming
-- [ ] API is production-ready and stable
-- [ ] You have pricing structure defined
-- [ ] You can provide API documentation
-
----
-
-## API Compatibility Requirements
-
-### Supported API Formats
-- [ ] **OpenAI Format**: `/v1/chat/completions` endpoint
-- [ ] **Anthropic Format**: `/v1/messages` endpoint
-- [ ] **Google Format**: `generateContent` endpoint
-- [ ] **Streaming**: SSE (Server-Sent Events) support
-
-### Parameter Support
-- [ ] `model` - Model identifier
-- [ ] `messages` - Conversation history (OpenAI format)
-- [ ] `max_tokens` - Maximum completion tokens
-- [ ] `temperature` - Sampling temperature (0-2)
-- [ ] `top_p` - Nucleus sampling parameter
-- [ ] `top_k` - Top-k sampling parameter (if applicable)
-- [ ] `frequency_penalty` - Frequency penalty (-2 to 2)
-- [ ] `presence_penalty` - Presence penalty (-2 to 2)
-- [ ] `stop` - Stop sequences
-- [ ] `stream` - Streaming support (true/false)
-- [ ] `tools` / `functions` - Function calling support (if applicable)
-- [ ] `response_format` - JSON mode support (if applicable)
-
-### Error Handling
-- [ ] Returns standard HTTP status codes (4xx, 5xx)
-- [ ] Error responses include descriptive messages
-- [ ] Rate limit errors return `429` status
-- [ ] Authentication errors return `401` status
-- [ ] Invalid requests return `400` status with details
+{
+  "model": "your-model-name",
+  "messages": [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Hello!"}
+  ],
+  "temperature": 0.7,
+  "max_tokens": 150,
+  "stream": false
+}
+```
 
 ---
-
-## Model Information Requirements
-
-### Model Identification
-- [ ] Unique model ID (e.g., `provider-name/model-name-version`)
-- [ ] Display name for the model
-- [ ] Model version or release date
-- [ ] Model family/architecture (e.g., GPT, Claude, Llama)
-
-### Pricing Information
-- [ ] Prompt token price (per 1M tokens)
-- [ ] Completion token price (per 1M tokens)
-- [ ] Any special pricing tiers or discounts
-- [ ] Image input pricing (if applicable)
-- [ ] Image output pricing (if applicable)
-
-### Model Specifications
-- [ ] Context length (input + output tokens)
-- [ ] Maximum output tokens
-- [ ] Training data cutoff date
-- [ ] Supported languages
-- [ ] Modality (text, vision, audio, etc.)
-
-### Model Capabilities
-- [ ] Function/tool calling support (yes/no)
-- [ ] JSON mode support (yes/no)
-- [ ] Vision capabilities (yes/no)
-- [ ] Streaming support (yes/no)
-- [ ] System message support (yes/no)
-
----
-
-## Technical Implementation
-
-### API Endpoint Configuration
-- [ ] Production API base URL
-- [ ] Staging/testing endpoint (if available)
-- [ ] Endpoint supports HTTPS
-- [ ] API versioning strategy
 
 ### Authentication
-- [ ] Authentication method (API key, OAuth, etc.)
-- [ ] API key format and location (header, query param)
-- [ ] Sample authentication header example
-- [ ] Key rotation policy (if applicable)
+
+#### API Key Implementation
+- [ ] **Authentication Method**
+  - [ ] Bearer token authentication in Authorization header
+  - [ ] Alternative: `api-key` header support
+  - [ ] API keys are UUIDs or cryptographically secure random strings
+  - [ ] Minimum key length: 32 characters
+
+- [ ] **Key Management**
+  - [ ] Key generation endpoint or dashboard
+  - [ ] Key revocation capability
+  - [ ] Multiple keys per account support
+  - [ ] Key usage tracking and analytics
+  - [ ] Key rotation policy documented
+
+- [ ] **Security Best Practices**
+  - [ ] HTTPS/TLS 1.2+ enforced (no HTTP)
+  - [ ] Keys encrypted at rest
+  - [ ] Keys never logged or exposed in responses
+  - [ ] IP whitelisting option (optional but recommended)
+  - [ ] Request signing support (optional)
+
+- [ ] **Authentication Errors**
+  - [ ] `401 Unauthorized` for missing/invalid keys
+  - [ ] Clear error messages:
+    ```json
+    {
+      "error": {
+        "message": "Invalid API key provided",
+        "type": "invalid_request_error",
+        "code": "invalid_api_key"
+      }
+    }
+    ```
+
+---
 
 ### Rate Limiting
-- [ ] Requests per minute (RPM) limit
-- [ ] Tokens per minute (TPM) limit
-- [ ] Rate limit headers in responses
-- [ ] Rate limit error handling
+
+#### Rate Limit Configuration
+- [ ] **Limits Defined**
+  - [ ] Requests per minute (RPM) limit specified
+  - [ ] Tokens per minute (TPM) limit specified
+  - [ ] Requests per day (RPD) limit (if applicable)
+  - [ ] Different tiers for different pricing plans
+  - [ ] Burst allowance documented
+
+- [ ] **Rate Limit Headers**
+  - [ ] `X-RateLimit-Limit-Requests` - Total requests allowed
+  - [ ] `X-RateLimit-Limit-Tokens` - Total tokens allowed
+  - [ ] `X-RateLimit-Remaining-Requests` - Requests remaining
+  - [ ] `X-RateLimit-Remaining-Tokens` - Tokens remaining
+  - [ ] `X-RateLimit-Reset-Requests` - Time when limit resets (Unix timestamp)
+  - [ ] `X-RateLimit-Reset-Tokens` - Token limit reset time
+
+#### Example Response Headers
+```
+X-RateLimit-Limit-Requests: 3500
+X-RateLimit-Limit-Tokens: 90000
+X-RateLimit-Remaining-Requests: 3499
+X-RateLimit-Remaining-Tokens: 89800
+X-RateLimit-Reset-Requests: 1733356800
+X-RateLimit-Reset-Tokens: 1733356800
+```
+
+- [ ] **Rate Limit Exceeded Response**
+  - [ ] HTTP Status: `429 Too Many Requests`
+  - [ ] `Retry-After` header with seconds until reset
+  - [ ] Clear error message:
+    ```json
+    {
+      "error": {
+        "message": "Rate limit exceeded. Please retry after 45 seconds.",
+        "type": "rate_limit_error",
+        "code": "rate_limit_exceeded"
+      }
+    }
+    ```
+
+- [ ] **Graceful Degradation**
+  - [ ] Soft limits with warnings before hard limits
+  - [ ] Queue requests when possible instead of rejecting
+  - [ ] Priority handling for different request types
+
+---
+
+### Error Handling
+
+#### Standard HTTP Status Codes
+- [ ] **Success Codes**
+  - [ ] `200 OK` - Successful non-streaming response
+  - [ ] `201 Created` - Resource created (if applicable)
+
+- [ ] **Client Error Codes (4xx)**
+  - [ ] `400 Bad Request` - Malformed request, invalid parameters
+  - [ ] `401 Unauthorized` - Missing or invalid authentication
+  - [ ] `403 Forbidden` - Valid auth but insufficient permissions
+  - [ ] `404 Not Found` - Model or endpoint not found
+  - [ ] `413 Payload Too Large` - Request exceeds size limits
+  - [ ] `422 Unprocessable Entity` - Validation errors
+  - [ ] `429 Too Many Requests` - Rate limit exceeded
+
+- [ ] **Server Error Codes (5xx)**
+  - [ ] `500 Internal Server Error` - Unexpected server error
+  - [ ] `502 Bad Gateway` - Upstream service error
+  - [ ] `503 Service Unavailable` - Temporary downtime
+  - [ ] `504 Gateway Timeout` - Request timeout
+
+#### Error Response Format
+- [ ] **Consistent Error Structure**
+  ```json
+  {
+    "error": {
+      "message": "Human-readable error description",
+      "type": "error_category",
+      "code": "specific_error_code",
+      "param": "problematic_parameter"
+    }
+  }
+  ```
+
+- [ ] **Error Types**
+  - [ ] `invalid_request_error` - Bad request format/parameters
+  - [ ] `authentication_error` - Auth issues
+  - [ ] `rate_limit_error` - Rate limits exceeded
+  - [ ] `api_error` - Server-side errors
+  - [ ] `timeout_error` - Request timeout
+  - [ ] `context_length_exceeded` - Prompt too long
+
+#### Detailed Error Examples
+
+**Invalid Parameter Error:**
+```json
+{
+  "error": {
+    "message": "Invalid value for 'temperature': must be between 0 and 2",
+    "type": "invalid_request_error",
+    "code": "invalid_parameter_value",
+    "param": "temperature"
+  }
+}
+```
+
+**Context Length Exceeded:**
+```json
+{
+  "error": {
+    "message": "This model's maximum context length is 4096 tokens. Your messages resulted in 5234 tokens.",
+    "type": "invalid_request_error",
+    "code": "context_length_exceeded",
+    "param": "messages"
+  }
+}
+```
+
+**Model Not Found:**
+```json
+{
+  "error": {
+    "message": "The model 'invalid-model-name' does not exist",
+    "type": "invalid_request_error",
+    "code": "model_not_found",
+    "param": "model"
+  }
+}
+```
+
+**Service Unavailable:**
+```json
+{
+  "error": {
+    "message": "The server is temporarily unable to handle the request.  Please try again later.",
+    "type": "api_error",
+    "code": "service_unavailable"
+  }
+}
+```
+
+---
+
+### Request Validation
+
+- [ ] **Input Validation**
+  - [ ] Validate all required fields present
+  - [ ] Check parameter types (string, number, boolean, array)
+  - [ ] Validate parameter ranges (e.g., temperature 0-2)
+  - [ ] Sanitize inputs to prevent injection attacks
+  - [ ] Validate message structure and roles
+  - [ ] Check total token count before processing
+
+- [ ] **Request Size Limits**
+  - [ ] Maximum request body size defined (e.g., 10MB)
+  - [ ] Maximum number of messages per request
+  - [ ] Maximum tokens per message
+  - [ ] Maximum total context length enforced
+
+---
 
 ### Response Format
-- [ ] OpenAI-compatible response structure
-- [ ] Streaming response format (if applicable)
-- [ ] Usage statistics in response
-  - [ ] `prompt_tokens`
-  - [ ] `completion_tokens`
-  - [ ] `total_tokens`
-- [ ] Finish reason indicators (`stop`, `length`, `tool_calls`)
+
+#### Non-Streaming Response
+- [ ] **Standard Response Structure**
+  ```json
+  {
+    "id": "chatcmpl-123abc",
+    "object": "chat.completion",
+    "created": 1733356800,
+    "model": "your-model-name",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "Response text here"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 50,
+      "total_tokens": 70
+    }
+  }
+  ```
+
+- [ ] **Required Fields**
+  - [ ] `id` - Unique identifier for the completion
+  - [ ] `object` - Object type (e.g., "chat.completion")
+  - [ ] `created` - Unix timestamp
+  - [ ] `model` - Model used for generation
+  - [ ] `choices` - Array of completion choices
+  - [ ] `usage` - Token usage statistics
+
+- [ ] **Finish Reasons**
+  - [ ] `stop` - Natural completion
+  - [ ] `length` - Max tokens reached
+  - [ ] `content_filter` - Content filtered
+  - [ ] `function_call` - Function call triggered (if supported)
+
+#### Streaming Response
+- [ ] **SSE Format**
+  - [ ] Content-Type: `text/event-stream`
+  - [ ] Each chunk prefixed with `data: `
+  - [ ] Chunks are valid JSON objects
+  - [ ] Final message is `data: [DONE]`
+  - [ ] Keep-alive messages sent if needed
+
+- [ ] **Streaming Chunk Format**
+  ```json
+  data: {"id":"chatcmpl-123","object":"chat.completion. chunk","created":1733356800,"model":"your-model","choices":[{"index":0,"delta":{"role":"assistant","content":"Hello"},"finish_reason":null}]}
+
+  data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1733356800,"model":"your-model","choices":[{"index":0,"delta":{"content":" world"},"finish_reason":null}]}
+
+  data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1733356800,"model":"your-model","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+  data: [DONE]
+  ```
 
 ---
 
-## Documentation Requirements
+### Timeout & Performance
 
-### Model Description
-- [ ] Clear, concise model description (2-3 sentences)
-- [ ] Primary use cases
-- [ ] Model strengths and capabilities
-- [ ] Any limitations or restrictions
+- [ ] **Timeout Configuration**
+  - [ ] Request timeout clearly defined (e.g., 60 seconds)
+  - [ ] Streaming timeout per chunk (e.g., 30 seconds of silence)
+  - [ ] Configurable timeout for long-running requests
+  - [ ] Graceful timeout handling with partial results if possible
 
-### Use Cases & Examples
-- [ ] At least 3 example use cases
-- [ ] Sample prompts and expected outputs
-- [ ] Best practices for prompt engineering
-- [ ] Parameter recommendations for different scenarios
-
-### API Documentation
-- [ ] Complete endpoint documentation
-- [ ] Request/response examples
-- [ ] Parameter descriptions
-- [ ] Error codes and meanings
-- [ ] cURL examples
-- [ ] SDK examples (Python, JavaScript, etc.)
-
-### Integration Guide
-- [ ] Quick start guide
-- [ ] Authentication setup
-- [ ] First API call example
-- [ ] Common issues and troubleshooting
+- [ ] **Performance Requirements**
+  - [ ] Time to first token (TTFT) < 2 seconds for streaming
+  - [ ] Average response time < 5 seconds for short prompts
+  - [ ] P95 latency documented
+  - [ ] Throughput capacity specified (requests/second)
 
 ---
 
-## Quality Standards
+### Health & Status Endpoints
 
-### Performance Benchmarks
-- [ ] Average response latency (ms)
-- [ ] P95 latency (ms)
-- [ ] Streaming time to first token (ms)
-- [ ] Tokens per second (for streaming)
+- [ ] **Health Check Endpoint**
+  - [ ] `/health` or `/status` endpoint
+  - [ ] Returns 200 OK when service is healthy
+  - [ ] Includes basic system status
+  - [ ] No authentication required for health checks
 
-### Reliability
-- [ ] Uptime SLA (target: 99.9%)
-- [ ] Planned maintenance notification process
-- [ ] Incident response time
-- [ ] Status page URL
-
-### Response Quality
-- [ ] Model performance benchmarks (MMLU, HumanEval, etc.)
-- [ ] Quality assurance process
-- [ ] Moderation/safety measures
-- [ ] Content filtering policies
+- [ ] **Example Health Response**
+  ```json
+  {
+    "status": "operational",
+    "version": "1.0.0",
+    "uptime": 99.95,
+    "timestamp": 1733356800
+  }
+  ```
 
 ---
 
-## Integration Process
+### CORS & Headers
 
-### Step 1: Initial Registration
-- [ ] Submit provider application to OpenRouter
-- [ ] Provide company/organization details
-- [ ] Share API documentation
-- [ ] Define pricing structure
+- [ ] **CORS Configuration** (if supporting browser requests)
+  - [ ] `Access-Control-Allow-Origin` properly configured
+  - [ ] `Access-Control-Allow-Methods` includes POST, OPTIONS
+  - [ ] `Access-Control-Allow-Headers` includes Authorization, Content-Type
+  - [ ] Preflight requests handled
 
-### Step 2: Technical Review
-- [ ] OpenRouter team reviews API documentation
-- [ ] Discuss any compatibility issues
-- [ ] Confirm parameter support
-- [ ] Review error handling
-
-### Step 3: API Testing
-- [ ] Provide test API key to OpenRouter
-- [ ] OpenRouter conducts integration testing
-- [ ] Fix any identified issues
-- [ ] Validate streaming functionality
-- [ ] Confirm pricing calculations
-
-### Step 4: Documentation Review
-- [ ] Submit model descriptions
-- [ ] Provide use case examples
-- [ ] Share pricing details
-- [ ] Include any special requirements
-
-### Step 5: Staging Validation
-- [ ] Test in OpenRouter staging environment
-- [ ] Validate all endpoints
-- [ ] Confirm parameter transformations
-- [ ] Test error scenarios
-- [ ] Verify billing calculations
-
-### Step 6: Go-Live Preparation
-- [ ] Final security review
-- [ ] Confirm production API endpoint
-- [ ] Set up monitoring and alerts
-- [ ] Prepare support documentation
-- [ ] Define escalation procedures
-
-### Step 7: Launch
-- [ ] Production API integration
-- [ ] Model listing goes live on OpenRouter
-- [ ] Monitor initial traffic
-- [ ] Collect user feedback
-- [ ] Address any issues promptly
+- [ ] **Response Headers**
+  - [ ] `Content-Type: application/json` for JSON responses
+  - [ ] `Content-Type: text/event-stream` for streaming
+  - [ ] Rate limit headers included
+  - [ ] Request ID header for tracking (e.g., `X-Request-ID`)
 
 ---
 
-## Testing & Validation
+### Logging & Debugging
 
-### Functional Testing
-- [ ] Basic completion request works
-- [ ] Streaming responses work correctly
-- [ ] All supported parameters function properly
-- [ ] Error handling works as expected
-- [ ] Rate limiting behaves correctly
+- [ ] **Request Logging**
+  - [ ] Every request logged with unique ID
+  - [ ] Timestamp, endpoint, status code logged
+  - [ ] Response time tracked
+  - [ ] NO sensitive data (API keys, user content) in logs
 
-### Load Testing
-- [ ] API handles expected traffic volume
-- [ ] Latency remains acceptable under load
-- [ ] Rate limits are properly enforced
-- [ ] No degradation in response quality
-
-### Edge Cases
-- [ ] Very long prompts (near context limit)
-- [ ] Empty or minimal prompts
-- [ ] Special characters and Unicode
-- [ ] Concurrent requests
-- [ ] Invalid parameters
-
-### Compatibility Testing
-- [ ] Works with OpenRouter's transformation layer
-- [ ] Compatible with popular SDKs
-- [ ] Functions in different programming languages
-- [ ] Mobile and web client compatibility
+- [ ] **Debug Support**
+  - [ ] Request ID returned in response headers
+  - [ ] Request ID included in error responses
+  - [ ] Ability to trace requests through system
+  - [ ] Detailed error logs for troubleshooting
 
 ---
 
-## Post-Launch Checklist
+### Versioning
 
-### Monitoring
-- [ ] Set up uptime monitoring
-- [ ] Monitor API latency
-- [ ] Track error rates
-- [ ] Monitor token usage and billing
+- [ ] **API Versioning Strategy**
+  - [ ] Version included in URL path (e.g., `/v1/`)
+  - [ ] Backward compatibility maintained within major versions
+  - [ ] Deprecation notices provided 6+ months in advance
+  - [ ] Multiple versions supported simultaneously during transition
+  - [ ] Clear migration guides between versions
+```
 
-### Support
-- [ ] Designate technical contact
-- [ ] Set up support email/channel
-- [ ] Create FAQ document
-- [ ] Join OpenRouter provider community
+This elaboration includes:
 
-### Maintenance
-- [ ] Regular API health checks
-- [ ] Plan for model updates
-- [ ] Pricing review process
-- [ ] Documentation updates
+1. **Detailed endpoint configuration** with example request structures
+2. **Comprehensive authentication** implementation details
+3. **Advanced rate limiting** with headers and examples
+4. **Extensive error handling** with specific error types and examples
+5. **Request validation** requirements
+6. **Complete response formats** for both streaming and non-streaming
+7. **Performance and timeout** specifications
+8. **Health check endpoints**
+9. **CORS and header** configurations
+10. **Logging and debugging** best practices
+11. **API versioning** strategy
 
-### Optimization
-- [ ] Collect performance metrics
-- [ ] Gather user feedback
-- [ ] Identify improvement areas
-- [ ] Plan feature enhancements
-
----
-
-## Resources
-
-- **OpenRouter Documentation**: [https://openrouter.ai/docs](https://openrouter.ai/docs)
-- **API Reference**: [https://openrouter. ai/docs/api-reference](https://openrouter. ai/docs/api-reference)
-- **Provider Portal**: Contact OpenRouter team for access
-- **Support**: support@openrouter.ai
-
----
-
-## Notes
-
-### Tips for Success
-1. **Start with one model**: Begin with your most stable model before adding others
-2. **Test thoroughly**: Use the checklist to ensure nothing is missed
-3. **Clear documentation**: The better your docs, the smoother the integration
-4. **Monitor closely**: Watch your API during initial launch period
-5. **Communicate**: Keep OpenRouter team updated on any changes
-
-### Common Issues to Avoid
-- ❌ Incomplete parameter support
-- ❌ Inconsistent error responses
-- ❌ Missing usage statistics in responses
-- ❌ Incorrect pricing calculations
-- ❌ Poor documentation
-- ❌ Inadequate rate limiting
-
-### Best Practices
-- ✅ Follow OpenAI API standards closely
-- ✅ Provide detailed error messages
-- ✅ Include usage statistics in every response
-- ✅ Test with various parameter combinations
-- ✅ Document any deviations from standards
-- ✅ Set up comprehensive monitoring
-
----
-
-## Contact
-
-For questions or to begin the integration process:
-- **Email**: support@openrouter. ai
-- **Website**: https://openrouter.ai
-
----
-
-**Version**: 1.0  
-**Last Updated**: December 2025
+Would you like me to:
+1.  Elaborate on any other sections?
+2. Create code examples for implementing these requirements?
+3. Generate test cases for API validation? 
