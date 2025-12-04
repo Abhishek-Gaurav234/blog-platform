@@ -1,439 +1,335 @@
-# OpenRouter API Integration Checklist
+# OpenRouter Provider Listing Requirements Checklist
 
-## 📋 Overview
-This checklist is designed for LLM providers preparing to integrate with OpenRouter.  Complete all sections to ensure compliance with OpenRouter's API requirements. 
+A comprehensive guide for model providers to get listed on OpenRouter. 
 
----
-
-## 1. Company & Provider Information
-
-### Basic Information
-- [ ] Company name provided
-- [ ] Company email provided (will be added to Slack Connect channel)
-- [ ] Privacy Policy URL published and accessible
-
-### Distinguishing Features
-Select and document what distinguishes your service:
-- [ ] Low Latency
-- [ ] High Throughput
-- [ ] Unique Models (list models not available elsewhere)
-- [ ] Low Pricing (provide comparative pricing)
-- [ ] Volume/Committed Discounts (specify discount structure)
-- [ ] Unique Infrastructure (describe technical advantages)
-- [ ] Decentralized Architecture
-- [ ] Strategic Partnership Opportunities
-- [ ] Unusually high performance on specific models
-- [ ] Other architectural innovations (hardware, caching, etc.)
-
-**Extra Details:**
-```
-[Document your unique value proposition and technical advantages]
-```
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Pre-Registration Checklist](#pre-registration-checklist)
+- [API Compatibility Requirements](#api-compatibility-requirements)
+- [Model Information Requirements](#model-information-requirements)
+- [Technical Implementation](#technical-implementation)
+- [Documentation Requirements](#documentation-requirements)
+- [Quality Standards](#quality-standards)
+- [Integration Process](#integration-process)
+- [Testing & Validation](#testing--validation)
 
 ---
 
-## 2. Core API Endpoints (REQUIRED)
+## Overview
 
-### 2.1 POST /chat/completions
-- [ ] **Endpoint URL provided:** `_______________________________`
-- [ ] OpenAI-compliant API format
-- [ ] Returns `usage` object for **non-stream** requests
-- [ ] Returns `usage` object for **stream** requests (CRITICAL)
-- [ ] Returns cache read/write usage (if caching available)
-- [ ] Supports streaming (`stream: true`)
-- [ ] Supports non-streaming (`stream: false`)
-- [ ] Tested with various payload sizes
-- [ ] Error handling implemented for malformed requests
-
-**Testing Checklist:**
-- [ ] Successfully returns responses for simple queries
-- [ ] Streaming works with SSE (Server-Sent Events) format
-- [ ] `data: [DONE]` signal sent at stream end
-- [ ] Usage tokens returned in final stream chunk
-- [ ] Non-streaming returns complete response with usage
+This checklist covers all requirements for listing your AI models on OpenRouter. Complete each section to ensure a smooth integration process.
 
 ---
 
-### 2.2 POST /completions
-- [ ] **Endpoint URL provided:** `_______________________________`
-- [ ] OpenAI-compliant API format
-- [ ] Returns `usage` object for **non-stream** requests
-- [ ] Returns `usage` object for **stream** requests (CRITICAL)
-- [ ] Returns cache read/write usage (if caching available)
-- [ ] Supports streaming (`stream: true`)
-- [ ] Supports non-streaming (`stream: false`)
-- [ ] Tested with text completion scenarios
+## Pre-Registration Checklist
+
+### Basic Requirements
+- [ ] Models support OpenAI-compatible API format OR
+- [ ] Models support Anthropic-compatible API format OR
+- [ ] Models support Google-compatible API format OR
+- [ ] Models support Server-Sent Events (SSE) streaming
+- [ ] API is production-ready and stable
+- [ ] You have pricing structure defined
+- [ ] You can provide API documentation
 
 ---
 
-### 2.3 GET /models
-- [ ] **Endpoint URL provided:** `_______________________________`
-- [ ] Returns up-to-date model information
-- [ ] Schema similar to [OpenAI models endpoint](https://platform.openai.com/docs/api-reference/models)
-- [ ] Shows **maximum output tokens** per model
-- [ ] Shows **context length** per model
-- [ ] Includes model IDs matching what's used in completions endpoints
-- [ ] Returns pricing information per model (if applicable)
-- [ ] Updates dynamically when models are added/removed
+## API Compatibility Requirements
 
-**Required Fields per Model:**
-- [ ] `id` (model identifier)
-- [ ] `object` (should be "model")
-- [ ] `created` (timestamp)
-- [ ] `owned_by` (your company name)
-- [ ] `context_length` (integer)
-- [ ] `max_output_tokens` (integer)
+### Supported API Formats
+- [ ] **OpenAI Format**: `/v1/chat/completions` endpoint
+- [ ] **Anthropic Format**: `/v1/messages` endpoint
+- [ ] **Google Format**: `generateContent` endpoint
+- [ ] **Streaming**: SSE (Server-Sent Events) support
 
----
-
-## 3. Tokenization
-
-- [ ] **Tokenizer used:** `_______________________________`
-- [ ] Token counting method documented
-- [ ] Consistent with reported usage in API responses
-- [ ] Handles special tokens appropriately
-- [ ] Documented edge cases (if any)
-
-**Documentation:**
-```
-[Explain how you count tokens, which tokenizer you use, and any specifics]
-```
-
----
-
-## 4. Required Parameters Support
-
-All endpoints must support these parameters:
-
-- [ ] `max_tokens` - Maximum tokens to generate
-- [ ] `temperature` - Sampling temperature (0. 0 to 2.0 typical range)
+### Parameter Support
+- [ ] `model` - Model identifier
+- [ ] `messages` - Conversation history (OpenAI format)
+- [ ] `max_tokens` - Maximum completion tokens
+- [ ] `temperature` - Sampling temperature (0-2)
 - [ ] `top_p` - Nucleus sampling parameter
-- [ ] `stop` - Stop sequences (string or array)
-- [ ] `seed` - Random seed for reproducibility
+- [ ] `top_k` - Top-k sampling parameter (if applicable)
+- [ ] `frequency_penalty` - Frequency penalty (-2 to 2)
+- [ ] `presence_penalty` - Presence penalty (-2 to 2)
+- [ ] `stop` - Stop sequences
+- [ ] `stream` - Streaming support (true/false)
+- [ ] `tools` / `functions` - Function calling support (if applicable)
+- [ ] `response_format` - JSON mode support (if applicable)
 
-**Parameter Testing:**
-- [ ] Each parameter tested individually
-- [ ] Parameters tested in combination
-- [ ] Default values documented
-- [ ] Range limits documented
-
----
-
-## 5. Optional Parameters Support
-
-Mark which optional parameters you support:
-
-### Sampling Parameters
-- [ ] `top_k` - Top-K sampling
-- [ ] `frequency_penalty` - Penalize frequent tokens
-- [ ] `presence_penalty` - Penalize present tokens
-- [ ] `repetition_penalty` - Alternative repetition control
-- [ ] `min_p` - Minimum probability threshold
-- [ ] `top_a` - Top-A sampling
-
-### Response Control
-- [ ] `logit_bias` - Modify token probabilities
-- [ ] `logprobs` - Return log probabilities
-- [ ] `top_logprobs` - Number of top logprobs to return
-
-### Structured Outputs
-- [ ] `response_format` - Control output format (e.g., JSON)
-- [ ] `structured_outputs` - JSON schema validation
-
-### Tool Calling
-- [ ] `tools` - Function/tool definitions
-- [ ] `tool_choice` - Control tool selection
-
-**Additional Parameters:**
-```
-[List any extra sampling or control parameters you support]
-```
+### Error Handling
+- [ ] Returns standard HTTP status codes (4xx, 5xx)
+- [ ] Error responses include descriptive messages
+- [ ] Rate limit errors return `429` status
+- [ ] Authentication errors return `401` status
+- [ ] Invalid requests return `400` status with details
 
 ---
 
-## 6. Tool Calling (If Supported)
+## Model Information Requirements
 
-- [ ] Tool calling supported
-- [ ] Works with **streaming** requests
-- [ ] Well-tested and production-ready
-  - [ ] Production-ready
-  - [ ] Beta (experimental)
-- [ ] Follows OpenAI function calling schema
-- [ ] Returns tool calls in stream chunks
-- [ ] Handles multiple tool calls in single request
-- [ ] Handles parallel tool calls
+### Model Identification
+- [ ] Unique model ID (e.g., `provider-name/model-name-version`)
+- [ ] Display name for the model
+- [ ] Model version or release date
+- [ ] Model family/architecture (e.g., GPT, Claude, Llama)
 
-**Testing Status:**
-```
-[Describe testing coverage and known limitations]
-```
+### Pricing Information
+- [ ] Prompt token price (per 1M tokens)
+- [ ] Completion token price (per 1M tokens)
+- [ ] Any special pricing tiers or discounts
+- [ ] Image input pricing (if applicable)
+- [ ] Image output pricing (if applicable)
 
----
+### Model Specifications
+- [ ] Context length (input + output tokens)
+- [ ] Maximum output tokens
+- [ ] Training data cutoff date
+- [ ] Supported languages
+- [ ] Modality (text, vision, audio, etc.)
 
-## 7. Structured Outputs (If Supported)
-
-- [ ] JSON schema support implemented
-- [ ] Works with **streaming** requests
-- [ ] Always returns valid JSON matching schema
-- [ ] Well-tested and production-ready
-  - [ ] Production-ready
-  - [ ] Beta (experimental)
-- [ ] Handles complex nested schemas
-- [ ] Provides validation errors when schema violated
-
-**Schema Support Details:**
-```
-[Describe JSON schema capabilities and limitations]
-```
+### Model Capabilities
+- [ ] Function/tool calling support (yes/no)
+- [ ] JSON mode support (yes/no)
+- [ ] Vision capabilities (yes/no)
+- [ ] Streaming support (yes/no)
+- [ ] System message support (yes/no)
 
 ---
 
-## 8. Multi-Modal Support (If Applicable)
+## Technical Implementation
 
-### Supported Image Types
-- [ ] `image/jpeg` (JPEG)
-- [ ] `image/png` (PNG)
-- [ ] `image/gif` (GIF)
-- [ ] `image/webp` (WebP)
-- [ ] Other: `_______________________________`
+### API Endpoint Configuration
+- [ ] Production API base URL
+- [ ] Staging/testing endpoint (if available)
+- [ ] Endpoint supports HTTPS
+- [ ] API versioning strategy
 
-### Image Input Methods
-- [ ] Base64 encoded images
-- [ ] Image URLs
-- [ ] Maximum image size: `_____ MB`
-- [ ] Maximum images per request: `_____`
+### Authentication
+- [ ] Authentication method (API key, OAuth, etc.)
+- [ ] API key format and location (header, query param)
+- [ ] Sample authentication header example
+- [ ] Key rotation policy (if applicable)
 
-### Multi-Modal Models
-```
-[List models that support vision/multi-modal inputs]
-```
+### Rate Limiting
+- [ ] Requests per minute (RPM) limit
+- [ ] Tokens per minute (TPM) limit
+- [ ] Rate limit headers in responses
+- [ ] Rate limit error handling
 
----
-
-## 9. Pricing & Payment
-
-### Pricing Transparency
-- [ ] Publicly available pricing in USD per M tokens
-- [ ] Pricing broken down by:
-  - [ ] Input tokens
-  - [ ] Output tokens
-  - [ ] Cache read tokens (if applicable)
-  - [ ] Cache write tokens (if applicable)
-- [ ] Pricing matches what's returned in `/models` endpoint
-
-### Volume Discounts
-- [ ] Volume discounts available
-- [ ] Discount structure documented:
-```
-[Describe volume tiers and discount percentages]
-```
-
-### Payment Methods
-- [ ] Credit card payments accepted
-- [ ] Automated payment supported (auto top-up)
-- [ ] Invoicing available
-- [ ] Payment frequency: `_______________________________`
-
-**Invoicing Details:**
-```
-[Describe invoicing process and payment terms]
-```
+### Response Format
+- [ ] OpenAI-compatible response structure
+- [ ] Streaming response format (if applicable)
+- [ ] Usage statistics in response
+  - [ ] `prompt_tokens`
+  - [ ] `completion_tokens`
+  - [ ] `total_tokens`
+- [ ] Finish reason indicators (`stop`, `length`, `tool_calls`)
 
 ---
 
-## 10. Rate Limits
+## Documentation Requirements
 
-- [ ] **Initial rate limits documented:**
-  - Requests per minute: `_____`
-  - Requests per day: `_____`
-  - Tokens per minute: `_____`
-  - Concurrent requests: `_____`
+### Model Description
+- [ ] Clear, concise model description (2-3 sentences)
+- [ ] Primary use cases
+- [ ] Model strengths and capabilities
+- [ ] Any limitations or restrictions
 
-- [ ] Rate limits can be raised
-- [ ] Process for raising limits documented:
-```
-[Describe how OpenRouter can request rate limit increases]
-```
+### Use Cases & Examples
+- [ ] At least 3 example use cases
+- [ ] Sample prompts and expected outputs
+- [ ] Best practices for prompt engineering
+- [ ] Parameter recommendations for different scenarios
 
-- [ ] Rate limit headers returned in responses:
-  - [ ] `x-ratelimit-limit-requests`
-  - [ ] `x-ratelimit-remaining-requests`
-  - [ ] `x-ratelimit-reset-requests`
+### API Documentation
+- [ ] Complete endpoint documentation
+- [ ] Request/response examples
+- [ ] Parameter descriptions
+- [ ] Error codes and meanings
+- [ ] cURL examples
+- [ ] SDK examples (Python, JavaScript, etc.)
 
----
-
-## 11. Failure States & Billing
-
-### Mid-Request Cancellations
-When clients disconnect/abort mid-stream:
-- [ ] **Do you charge? **
-  - [ ] Yes, we charge for tokens generated up to cancellation
-  - [ ] No, we do not charge for cancelled requests
-
-**Cancellation Policy:**
-```
-[Explain your cancellation billing policy in detail]
-```
+### Integration Guide
+- [ ] Quick start guide
+- [ ] Authentication setup
+- [ ] First API call example
+- [ ] Common issues and troubleshooting
 
 ---
 
-### Model/Engine Failures
-When models fail or engine errors occur:
-- [ ] **Do you charge?**
-  - [ ] Yes, we charge even on failures
-  - [ ] No, we do not charge for failed requests
+## Quality Standards
 
-**Failure Billing Policy:**
-```
-[Explain when you do/don't charge for failures]
-```
+### Performance Benchmarks
+- [ ] Average response latency (ms)
+- [ ] P95 latency (ms)
+- [ ] Streaming time to first token (ms)
+- [ ] Tokens per second (for streaming)
 
----
+### Reliability
+- [ ] Uptime SLA (target: 99.9%)
+- [ ] Planned maintenance notification process
+- [ ] Incident response time
+- [ ] Status page URL
 
-### Error Response Format
-- [ ] OpenAI-compliant error format
-- [ ] Includes `error. message`
-- [ ] Includes `error.type`
-- [ ] Includes `error.code` (if applicable)
-
-**Special Error Shapes:**
-```
-[Document any custom error codes or finish_reason values]
-```
-
-**Custom Finish Reasons:**
-- [ ] `stop` - Natural completion
-- [ ] `length` - Max tokens reached
-- [ ] `content_filter` - Content filtered
-- [ ] `tool_calls` - Tool calling completed
-- [ ] Other: `_______________________________`
+### Response Quality
+- [ ] Model performance benchmarks (MMLU, HumanEval, etc.)
+- [ ] Quality assurance process
+- [ ] Moderation/safety measures
+- [ ] Content filtering policies
 
 ---
 
-## 12. Data Privacy & Retention
+## Integration Process
 
-### Training Policy
-- [ ] **Do you train on prompts? **
-  - [ ] Yes
-  - [ ] No
+### Step 1: Initial Registration
+- [ ] Submit provider application to OpenRouter
+- [ ] Provide company/organization details
+- [ ] Share API documentation
+- [ ] Define pricing structure
 
-- [ ] **Do you train on completions?**
-  - [ ] Yes
-  - [ ] No
+### Step 2: Technical Review
+- [ ] OpenRouter team reviews API documentation
+- [ ] Discuss any compatibility issues
+- [ ] Confirm parameter support
+- [ ] Review error handling
 
-### Data Retention
-- [ ] Logging policy documented
-- [ ] Retention period: `_______________________________`
-- [ ] Data deletion process available
-- [ ] Compliance certifications:
-  - [ ] GDPR compliant
-  - [ ] SOC 2
-  - [ ] HIPAA
-  - [ ] Other: `_______________________________`
+### Step 3: API Testing
+- [ ] Provide test API key to OpenRouter
+- [ ] OpenRouter conducts integration testing
+- [ ] Fix any identified issues
+- [ ] Validate streaming functionality
+- [ ] Confirm pricing calculations
 
-**Data Policy Details:**
-```
-[Provide comprehensive data handling and privacy policy]
-```
+### Step 4: Documentation Review
+- [ ] Submit model descriptions
+- [ ] Provide use case examples
+- [ ] Share pricing details
+- [ ] Include any special requirements
 
----
+### Step 5: Staging Validation
+- [ ] Test in OpenRouter staging environment
+- [ ] Validate all endpoints
+- [ ] Confirm parameter transformations
+- [ ] Test error scenarios
+- [ ] Verify billing calculations
 
-## 13. Infrastructure & Location
+### Step 6: Go-Live Preparation
+- [ ] Final security review
+- [ ] Confirm production API endpoint
+- [ ] Set up monitoring and alerts
+- [ ] Prepare support documentation
+- [ ] Define escalation procedures
 
-### Inference Locations
-Document country codes where inference will be served:
-- [ ] `_______________________________`
-- [ ] `_______________________________`
-- [ ] `_______________________________`
-
-### Performance Considerations
-- [ ] Can handle streaming-only requests from OpenRouter
-- [ ] Can handle requirement to always return `stream_options. include_usage: true`
-- [ ] No latency issues with streaming requirements
-- [ ] No QoS degradation expected
-
-**Performance Notes:**
-```
-[Document any concerns about streaming performance or latency]
-```
-
----
-
-## 14. Testing & Validation
-
-### Basic Integration Tests
-- [ ] `/chat/completions` non-stream request successful
-- [ ] `/chat/completions` stream request successful
-- [ ] `/completions` non-stream request successful
-- [ ] `/completions` stream request successful
-- [ ] `/models` returns valid data
-- [ ] Usage tokens returned in all responses
-
-### Streaming Tests
-- [ ] Stream chunks arrive incrementally
-- [ ] `data: [DONE]` signal received
-- [ ] Usage included in stream (with `stream_options.include_usage: true`)
-- [ ] Connection handles long responses (10K+ tokens)
-- [ ] Cancellation mid-stream works gracefully
-
-### Error Handling Tests
-- [ ] Invalid API key returns 401
-- [ ] Invalid model returns 404
-- [ ] Malformed JSON returns 400
-- [ ] Rate limit returns 429
-- [ ] Server errors return 500+ with details
-
-### Load Tests
-- [ ] Sustained concurrent requests handled
-- [ ] Rate limits enforced correctly
-- [ ] No degradation at advertised throughput
+### Step 7: Launch
+- [ ] Production API integration
+- [ ] Model listing goes live on OpenRouter
+- [ ] Monitor initial traffic
+- [ ] Collect user feedback
+- [ ] Address any issues promptly
 
 ---
 
-## 15. Final Confirmation
+## Testing & Validation
 
-- [ ] All required endpoints implemented and tested
-- [ ] All required parameters supported
-- [ ] Usage tokens always returned (stream and non-stream)
-- [ ] OpenAI compatibility verified
-- [ ] Documentation complete and accurate
-- [ ] Privacy policy published
-- [ ] Pricing published
-- [ ] Payment method established
-- [ ] **Confirmed: We can handle streaming-only requests**
-- [ ] **Confirmed: We always return `stream_options.include_usage: true`**
+### Functional Testing
+- [ ] Basic completion request works
+- [ ] Streaming responses work correctly
+- [ ] All supported parameters function properly
+- [ ] Error handling works as expected
+- [ ] Rate limiting behaves correctly
 
----
+### Load Testing
+- [ ] API handles expected traffic volume
+- [ ] Latency remains acceptable under load
+- [ ] Rate limits are properly enforced
+- [ ] No degradation in response quality
 
-## 16. Submission Notes
+### Edge Cases
+- [ ] Very long prompts (near context limit)
+- [ ] Empty or minimal prompts
+- [ ] Special characters and Unicode
+- [ ] Concurrent requests
+- [ ] Invalid parameters
 
-**Final Notes for OpenRouter Team:**
-```
-[Add any additional context, concerns, or information about latency/QoS
-with streaming requirements, special considerations, or unique features]
-```
-
----
-
-## Contact & Support
-
-- **Technical Contact:** `_______________________________`
-- **Support Email:** `_______________________________`
-- **Documentation URL:** `_______________________________`
-- **Status Page URL:** `_______________________________`
-- **Slack Channel:** (Will be created by OpenRouter)
+### Compatibility Testing
+- [ ] Works with OpenRouter's transformation layer
+- [ ] Compatible with popular SDKs
+- [ ] Functions in different programming languages
+- [ ] Mobile and web client compatibility
 
 ---
 
-## Appendix: OpenAI Compatibility Reference
+## Post-Launch Checklist
 
-For detailed parameter specifications, refer to:
-- Chat Completions: https://platform. openai.com/docs/api-reference/chat
-- Completions: https://platform.openai.com/docs/api-reference/completions
-- Models: https://platform.openai.com/docs/api-reference/models
+### Monitoring
+- [ ] Set up uptime monitoring
+- [ ] Monitor API latency
+- [ ] Track error rates
+- [ ] Monitor token usage and billing
+
+### Support
+- [ ] Designate technical contact
+- [ ] Set up support email/channel
+- [ ] Create FAQ document
+- [ ] Join OpenRouter provider community
+
+### Maintenance
+- [ ] Regular API health checks
+- [ ] Plan for model updates
+- [ ] Pricing review process
+- [ ] Documentation updates
+
+### Optimization
+- [ ] Collect performance metrics
+- [ ] Gather user feedback
+- [ ] Identify improvement areas
+- [ ] Plan feature enhancements
 
 ---
 
-**Version:** 1.0  
-**Last Updated:** 2025-12-04  
-**Based on:** OpenRouter Provider Onboarding Questionnaire
+## Resources
+
+- **OpenRouter Documentation**: [https://openrouter.ai/docs](https://openrouter.ai/docs)
+- **API Reference**: [https://openrouter. ai/docs/api-reference](https://openrouter. ai/docs/api-reference)
+- **Provider Portal**: Contact OpenRouter team for access
+- **Support**: support@openrouter.ai
+
+---
+
+## Notes
+
+### Tips for Success
+1. **Start with one model**: Begin with your most stable model before adding others
+2. **Test thoroughly**: Use the checklist to ensure nothing is missed
+3. **Clear documentation**: The better your docs, the smoother the integration
+4. **Monitor closely**: Watch your API during initial launch period
+5. **Communicate**: Keep OpenRouter team updated on any changes
+
+### Common Issues to Avoid
+- ❌ Incomplete parameter support
+- ❌ Inconsistent error responses
+- ❌ Missing usage statistics in responses
+- ❌ Incorrect pricing calculations
+- ❌ Poor documentation
+- ❌ Inadequate rate limiting
+
+### Best Practices
+- ✅ Follow OpenAI API standards closely
+- ✅ Provide detailed error messages
+- ✅ Include usage statistics in every response
+- ✅ Test with various parameter combinations
+- ✅ Document any deviations from standards
+- ✅ Set up comprehensive monitoring
+
+---
+
+## Contact
+
+For questions or to begin the integration process:
+- **Email**: support@openrouter. ai
+- **Website**: https://openrouter.ai
+
+---
+
+**Version**: 1.0  
+**Last Updated**: December 2025
